@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ChatServer extends UnicastRemoteObject implements ChatService {
-    private List<ClientCallback> clients;
+    public List<ClientCallback> clients;
 
     public ChatServer() throws RemoteException {
         clients = new ArrayList<>();
@@ -21,6 +21,9 @@ public class ChatServer extends UnicastRemoteObject implements ChatService {
     public void registerClient(ClientCallback client, String username) throws RemoteException {
         clients.add(client);
         broadcastMessage(username + " se ha unido al chat.");
+        for(int i=0;i<clients.size();i++){
+            System.out.println(clients.get(i));
+        }
     }
 
     @Override
@@ -45,18 +48,39 @@ public class ChatServer extends UnicastRemoteObject implements ChatService {
             }
         }
     }
+    
+    public void connection(String Ip){
+        try {
+                ChatService chatService = new ChatServer();
+
+                LocateRegistry.createRegistry(9000);
+
+                //            String serverUrl = "rmi://192.168.84.107:9000/ChatService";
+
+               // java.rmi.Naming.rebind("rmi://192.168.84.107:9000/ChatService", chatService);
+                java.rmi.Naming.rebind("rmi://"+Ip+":9000/ChatService", chatService);
+ 
+               System.out.println("Servidor de chat RMI listo.");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+    }
+    
 
     public static void main(String[] args) {
-        try {
-            ChatService chatService = new ChatServer();
-            
-            LocateRegistry.createRegistry(1099);
+                try {
+                ChatService chatService = new ChatServer();
 
-            
-            java.rmi.Naming.rebind("rmi://192.168.1.72:1099/ChatService", chatService);
-            System.out.println("Servidor de chat RMI listo.");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+                LocateRegistry.createRegistry(9000);
+
+                //            String serverUrl = "rmi://192.168.84.107:9000/ChatService";
+
+                java.rmi.Naming.rebind("rmi://localhost:9000/ChatService", chatService);
+                System.out.println("Servidor de chat RMI listo.");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
     }
 }
