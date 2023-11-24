@@ -10,20 +10,17 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.HashMap;
 import java.util.Map;
 import javax.swing.JTextArea;
-pero
+
 public class ChatServer extends UnicastRemoteObject implements ChatService {
-    private Map<String, ClientCallback> clients; 
-    private Map<String, JTextArea> clientTextAreas; 
+    private Map<String, ClientCallback> clients;
 
     public ChatServer() throws RemoteException {
         clients = new HashMap<>();
-        clientTextAreas = new HashMap<>();
     }
 
     @Override
-    public void registerClient(ClientCallback client, String username, JTextArea jTextArea) throws RemoteException {
+    public void registerClient(ClientCallback client, String username) throws RemoteException {
         clients.put(username, client);
-        clientTextAreas.put(username, jTextArea);
         broadcastMessage(username + " se ha unido al chat.");
     }
 
@@ -35,7 +32,6 @@ public class ChatServer extends UnicastRemoteObject implements ChatService {
     public void unregisterClient(ClientCallback client) throws RemoteException {
         String username = getClientUsername(client);
         clients.remove(username);
-        clientTextAreas.remove(username);
     }
 
     @Override
@@ -48,11 +44,9 @@ public class ChatServer extends UnicastRemoteObject implements ChatService {
     @Override
     public void sendDirectMessage(String sender, String receiver, String message) throws RemoteException {
         ClientCallback client = clients.get(receiver);
-        JTextArea receiverTextArea = clientTextAreas.get(receiver);
 
-        if (client != null && receiverTextArea != null) {
+        if (client != null) {
             client.receiveMessage("[Mensaje privado de " + sender + "]: " + message);
-            receiverTextArea.append("[Mensaje privado de " + sender + "]: " + message + "\n");
         }
     }
     

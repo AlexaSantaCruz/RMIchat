@@ -20,8 +20,8 @@ public class ChatClient {
             
             chatService = (ChatService) Naming.lookup(serverUrl);
 
-            ClientCallbackImpl clientCallback = new ClientCallbackImpl(username);
-            chatService.registerClient(clientCallback, username, jTextArea);
+            ClientCallbackImpl clientCallback = new ClientCallbackImpl(username, jTextArea);
+            chatService.registerClient(clientCallback, username);
 
 
         } catch (Exception e) {
