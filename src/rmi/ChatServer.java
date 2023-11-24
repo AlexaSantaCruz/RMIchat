@@ -7,45 +7,52 @@ package rmi;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.ArrayList;
-import java.util.List;
-
+import java.util.HashMap;
+import java.util.Map;
+import javax.swing.JTextArea;
+pero
 public class ChatServer extends UnicastRemoteObject implements ChatService {
-    public List<ClientCallback> clients;
+    private Map<String, ClientCallback> clients; 
+    private Map<String, JTextArea> clientTextAreas; 
 
     public ChatServer() throws RemoteException {
-        clients = new ArrayList<>();
+        clients = new HashMap<>();
+        clientTextAreas = new HashMap<>();
     }
 
     @Override
-    public void registerClient(ClientCallback client, String username) throws RemoteException {
-        clients.add(client);
+    public void registerClient(ClientCallback client, String username, JTextArea jTextArea) throws RemoteException {
+        clients.put(username, client);
+        clientTextAreas.put(username, jTextArea);
         broadcastMessage(username + " se ha unido al chat.");
-        for(int i=0;i<clients.size();i++){
-            System.out.println(clients.get(i));
-        }
     }
+
+    private String getClientUsername(ClientCallback client) throws RemoteException {
+    return client.getUsername();
+}
 
     @Override
     public void unregisterClient(ClientCallback client) throws RemoteException {
-        clients.remove(client);
+        String username = getClientUsername(client);
+        clients.remove(username);
+        clientTextAreas.remove(username);
     }
 
     @Override
     public void broadcastMessage(String message) throws RemoteException {
-        for (ClientCallback client : clients) {
+        for (ClientCallback client : clients.values()) {
             client.receiveMessage(message);
         }
     }
 
     @Override
     public void sendDirectMessage(String sender, String receiver, String message) throws RemoteException {
-        // Buscar al receptor en la lista de clientes y enviarle el mensaje directo
-        for (ClientCallback client : clients) {
-            if (client.toString().equals(receiver)) {
-                client.receiveMessage("[Mensaje privado de " + sender + "]: " + message);
-                break;
-            }
+        ClientCallback client = clients.get(receiver);
+        JTextArea receiverTextArea = clientTextAreas.get(receiver);
+
+        if (client != null && receiverTextArea != null) {
+            client.receiveMessage("[Mensaje privado de " + sender + "]: " + message);
+            receiverTextArea.append("[Mensaje privado de " + sender + "]: " + message + "\n");
         }
     }
     
