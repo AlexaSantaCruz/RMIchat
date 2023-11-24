@@ -10,11 +10,12 @@ import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 
 public class ClientCallbackImpl extends UnicastRemoteObject implements ClientCallback {
-    private String username;
-    private JTextArea jTextArea;
+    private final String username;
+    private final JTextArea jTextArea;
 
-    public ClientCallbackImpl(String username) throws RemoteException {
+    public ClientCallbackImpl(String username,  JTextArea jTextArea) throws RemoteException {
         this.username = username;
+        this.jTextArea = jTextArea;
     }
 
     @Override
@@ -32,11 +33,6 @@ public class ClientCallbackImpl extends UnicastRemoteObject implements ClientCal
     @Override
     public String getUsername() throws RemoteException {
         return username;
-    }
-
-    @Override
-    public void setJTextArea(JTextArea textArea) throws RemoteException {
-        this.jTextArea = textArea;
     }
 }
 

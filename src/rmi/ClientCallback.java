@@ -11,5 +11,4 @@ import javax.swing.JTextArea;
 public interface ClientCallback extends Remote {
     void receiveMessage(String message) throws RemoteException;
     String getUsername() throws RemoteException;
-    void setJTextArea(JTextArea textArea) throws RemoteException;
 }
