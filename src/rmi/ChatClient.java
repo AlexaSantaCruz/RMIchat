@@ -12,16 +12,16 @@ import javax.swing.JTextArea;
 public class ChatClient {
     ChatService chatService;
     
-    public void startClient(String username, JTextArea jTextArea){
+    public void startClient(String username, JTextArea jTextArea, String ip){
         try {
             //String serverUrl = "rmi://192.168.84.107:9000/ChatService";
-            String serverUrl = "rmi://localhost:9000/ChatService";
+            String serverUrl = "rmi://"+ip+":9000/ChatService";
 
             
             chatService = (ChatService) Naming.lookup(serverUrl);
 
-            ClientCallbackImpl clientCallback = new ClientCallbackImpl(username);
-            chatService.registerClient(clientCallback, username, jTextArea);
+            ClientCallbackImpl clientCallback = new ClientCallbackImpl(username, jTextArea);
+            chatService.registerClient(clientCallback, username);
 
 
         } catch (Exception e) {

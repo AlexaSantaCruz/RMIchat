@@ -24,9 +24,10 @@ public class Visual extends javax.swing.JFrame {
      */
     public Visual() throws RemoteException {
         this.chatServer = new ChatServer();
-        this.chatClient=new ChatClient();
+        this.chatClient = new ChatClient();
         initComponents();
     }
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -157,7 +158,7 @@ public class Visual extends javax.swing.JFrame {
             System.out.println(Ip);
             
             chatClient=new ChatClient();
-            chatClient.startClient(username, jTextArea1);
+            chatClient.startClient(username, jTextArea1,Ip);
             
             idClient++;
             jTextArea1.append("Se ha conectado al servidor!");
@@ -188,6 +189,7 @@ public class Visual extends javax.swing.JFrame {
             String privateUser=JOptionPane.showInputDialog(rootPane, "Escribe al usario al que le quieras mandar privado", "Cliente", HEIGHT);
             try {
                 chatClient.sendPrivate(username, privateUser, txtMensaje.getText());
+                cleanTxt();
             } catch (RemoteException ex) {
                 Logger.getLogger(Visual.class.getName()).log(Level.SEVERE, null, ex);
             }
