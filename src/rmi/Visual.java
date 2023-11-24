@@ -15,7 +15,7 @@ import javax.swing.JOptionPane;
  */
 public class Visual extends javax.swing.JFrame {
     ChatServer chatServer;
-    ChatClient[] chatClient;
+    ChatClient chatClient;
     String username;
     int idClient=0;
     
@@ -24,7 +24,7 @@ public class Visual extends javax.swing.JFrame {
      */
     public Visual() throws RemoteException {
         this.chatServer = new ChatServer();
-        this.chatClient=new ChatClient[5];
+        this.chatClient=new ChatClient();
         initComponents();
     }
 
@@ -156,8 +156,8 @@ public class Visual extends javax.swing.JFrame {
 
             System.out.println(Ip);
             
-            chatClient[idClient]=new ChatClient();
-            chatClient[idClient].startClient(username, jTextArea1);
+            chatClient=new ChatClient();
+            chatClient.startClient(username, jTextArea1);
             
             idClient++;
             jTextArea1.append("Se ha conectado al servidor!");
@@ -172,7 +172,7 @@ public class Visual extends javax.swing.JFrame {
             String message=txtMensaje.getText();
 
             try {
-                chatClient[idClient-1].sendMessage(message,username);
+                chatClient.sendMessage(message,username);
                 System.out.println(idClient-1);
                 cleanTxt();
             } catch (RemoteException ex) {
@@ -187,7 +187,7 @@ public class Visual extends javax.swing.JFrame {
 
             String privateUser=JOptionPane.showInputDialog(rootPane, "Escribe al usario al que le quieras mandar privado", "Cliente", HEIGHT);
             try {
-                chatClient[idClient-1].sendPrivate(username, privateUser, txtMensaje.getText());
+                chatClient.sendPrivate(username, privateUser, txtMensaje.getText());
             } catch (RemoteException ex) {
                 Logger.getLogger(Visual.class.getName()).log(Level.SEVERE, null, ex);
             }

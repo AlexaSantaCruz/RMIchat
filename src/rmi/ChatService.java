@@ -6,9 +6,10 @@ package rmi;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import javax.swing.JTextArea;
 
 public interface ChatService extends Remote {
-    void registerClient(ClientCallback client, String username) throws RemoteException;
+    void registerClient(ClientCallback client, String username, JTextArea jTextArea) throws RemoteException;
     void unregisterClient(ClientCallback client) throws RemoteException;
     void broadcastMessage(String message) throws RemoteException;
     void sendDirectMessage(String sender, String receiver, String message) throws RemoteException;
